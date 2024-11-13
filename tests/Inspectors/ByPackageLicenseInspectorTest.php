@@ -11,13 +11,9 @@ final class ByPackageLicenseInspectorTest extends TestCase
     public function testComponent()
     {
         $mock = $this->createMock(PackageContract::class);
-        $mock->expects($this->atLeastOnce())->method('getLicense')->willReturn(...[
-            '',
-            [],
-            'MIT',
-            ['mit', 'apache'],
-            ['mit', 'proprietary', 'apache'],
-        ]);
+        $mock->expects($this->atLeastOnce())->method('getLicense')->willReturnOnConsecutiveCalls(
+            [''], [], ['MIT'], ['mit', 'apache'], ['mit', 'proprietary', 'apache']
+        );
 
         $component = new ByPackageLicenseInspector(['accept-license:mit', 'accept-license:apache']);
 

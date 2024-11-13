@@ -5,3 +5,4 @@ Vagrantfile
 *.phar
 /*.lock
 build
+/.idea
