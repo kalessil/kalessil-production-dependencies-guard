@@ -13,7 +13,7 @@ final class ByVersionNameInspector implements InspectorContract
 
     public function __construct(array $settings = [])
     {
-        $this->envVar = explode(',', array_map(
+        $this->envVar = array_filter(explode(',', array_values(array_map(
             static function (string $setting): string {
                 return str_replace('check-version-environment:', '', $setting);
             },
@@ -23,11 +23,12 @@ final class ByVersionNameInspector implements InspectorContract
                     return strncmp($setting, 'check-version-environment:', 26) === 0;
                 }
             )
-        )[0] ?? '');
+        ))[0] ?? ''));
     }
 
     public function canUse(CompletePackageInterface $package): bool
     {
+        var_dump($this->envVar);
         if (isset($this->envVar[1]) && isset($_ENV[$this->envVar[0]]) && $_ENV[$this->envVar[0]] !== $this->envVar[1]) {
             return true;
         }
