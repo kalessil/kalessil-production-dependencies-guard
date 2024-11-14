@@ -24,7 +24,7 @@ Additional guard checks can be enabled in the top-level composer.json file:
             "check-license",
             "check-abandoned",
             "check-version",
-            "check-version:ENVIRONMENT,prod",
+            "check-version-environment:ENVIRONMENT,prod",
             
             "white-list:vendor/package-one",
             "white-list:vendor/package-two",
