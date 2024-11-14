@@ -31,7 +31,7 @@ class ByVersionNameInspectorTest extends TestCase
     {
         $_ENV['ENV'] = 'dev';
         $sut = new ByVersionNameInspector([
-            'check-version:ENV,prod'
+            'check-version-environment:ENV,prod'
         ]);
 
         $package = new CompletePackage('test', 'dev-abc as 1.2.3', 'dev-abc as 1.2.3');

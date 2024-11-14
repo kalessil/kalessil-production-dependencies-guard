@@ -15,12 +15,12 @@ final class ByVersionNameInspector implements InspectorContract
     {
         $this->envVar = explode(',', array_map(
             static function (string $setting): string {
-                return str_replace('check-version:', '', $setting);
+                return str_replace('check-version-environment:', '', $setting);
             },
             array_filter(
                 array_map('trim', $settings),
                 static function (string $setting): bool {
-                    return strncmp($setting, 'check-version:', 14) === 0;
+                    return strncmp($setting, 'check-version-environment:', 14) === 0;
                 }
             )
         )[0]) ?? null;
