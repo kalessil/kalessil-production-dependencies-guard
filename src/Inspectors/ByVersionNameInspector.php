@@ -20,7 +20,7 @@ final class ByVersionNameInspector implements InspectorContract
             array_filter(
                 array_map('trim', $settings),
                 static function (string $setting): bool {
-                    return strncmp($setting, 'check-version-environment:', 14) === 0;
+                    return strncmp($setting, 'check-version-environment:', 26) === 0;
                 }
             )
         )[0] ?? '');
