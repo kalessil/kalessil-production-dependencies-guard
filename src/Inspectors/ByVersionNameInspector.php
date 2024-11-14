@@ -23,7 +23,7 @@ final class ByVersionNameInspector implements InspectorContract
                     return strncmp($setting, 'check-version-environment:', 14) === 0;
                 }
             )
-        )[0]) ?? null;
+        )[0] ?? '');
     }
 
     public function canUse(CompletePackageInterface $package): bool
