@@ -31,7 +31,7 @@ final class Guard implements ComposerPluginContract, EventSubscriberContract
     const CHECK_DESCRIPTION  = 'check-description';
     const CHECK_LICENSE      = 'check-license';
     const CHECK_ABANDONED    = 'check-abandoned';
-    const CHECK_VERSION    = 'check-version';
+    const CHECK_VERSION      = 'check-version';
 
     /** @var bool */
     private $useLockFile;
@@ -59,7 +59,7 @@ final class Guard implements ComposerPluginContract, EventSubscriberContract
             'license'              => $checkLicense     ? new ByPackageLicenseInspector($settings) : new StubInspector(),
             'abandoned'            => $checkAbandoned   ? new ByPackageAbandonedInspector()        : new StubInspector(),
             'description-keywords' => $checkDescription ? new ByPackageDescriptionInspector()      : new StubInspector(),
-            'dev-version'          => $checkVersion     ? new ByVersionNameInspector()             : new StubInspector(),
+            'check-version'          => $checkVersion     ? new ByVersionNameInspector()             : new StubInspector(),
         ];
 
         $this->composer    = $composer;

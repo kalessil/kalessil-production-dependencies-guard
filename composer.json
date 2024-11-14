@@ -1,5 +1,5 @@
 {
-    "name":        "kalessil/production-dependencies-guard",
+    "name":        "tomhart/production-dependencies-guard",
     "type":        "composer-plugin",
     "description": "Prevents adding of development packages into require-section (should be require-dev).",
     "homepage":    "https://github.com/kalessil/production-dependencies-guard",
