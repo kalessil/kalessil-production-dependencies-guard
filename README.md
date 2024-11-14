@@ -23,7 +23,8 @@ Additional guard checks can be enabled in the top-level composer.json file:
             "check-description",
             "check-license",
             "check-abandoned",
-            "check-version"
+            "check-version",
+            "check-version:ENVIRONMENT,prod",
             
             "white-list:vendor/package-one",
             "white-list:vendor/package-two",
@@ -40,7 +41,9 @@ Additional guard checks can be enabled in the top-level composer.json file:
 - `check-description` enables description and keywords analysis (searches `debug`), allowing to detect custom dev-packages
 - `check-abandoned` enables abandoned packages checking
 - `check-license` enables license checking (packages must provide license information)
-- `check-version` enables package version checking, and will reject any packages with a dev version (e.g. `dev-XXX as 1.2.3`)
+- `check-version` enables package version checking, and will reject any packages with a dev version (e.g. `dev-XXX as 1.2.3`). 
+This can also be configured to read from `$_ENV` to only run in certain cases, for example `check-version:ENVIRONMENT,prod` will only 
+run when `$_ENV['environment'] === 'prod'`
 - `accept-license:...` specifies which licenses should be accepted (if the setting omitted, any license incl. proprietary)
 
 # Usage

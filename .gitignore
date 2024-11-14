@@ -6,3 +6,4 @@ Vagrantfile
 /*.lock
 build
 /.idea
+/.phpunit.result.cache

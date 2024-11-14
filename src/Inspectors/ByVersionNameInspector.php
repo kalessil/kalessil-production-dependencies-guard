@@ -9,8 +9,29 @@ use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\InspectorIn
 
 final class ByVersionNameInspector implements InspectorContract
 {
+    private $envVar;
+
+    public function __construct(array $settings = [])
+    {
+        $this->envVar = explode(',', array_map(
+            static function (string $setting): string {
+                return str_replace('check-version:', '', $setting);
+            },
+            array_filter(
+                array_map('trim', $settings),
+                static function (string $setting): bool {
+                    return strncmp($setting, 'check-version:', 14) === 0;
+                }
+            )
+        )[0]) ?? null;
+    }
+
     public function canUse(CompletePackageInterface $package): bool
     {
+        if ($this->envVar && isset($_ENV[$this->envVar[0]]) && $_ENV[$this->envVar[0]] !== $this->envVar[1]) {
+            return true;
+        }
+
         return !$package->isDev();
     }
 }
