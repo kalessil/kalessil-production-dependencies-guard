@@ -1,5 +1,5 @@
 {
-    "name":        "kalessil/production-dependencies-guard",
+    "name":        "tomhart/production-dependencies-guard",
     "type":        "composer-plugin",
     "description": "Prevents adding of development packages into require-section (should be require-dev).",
     "homepage":    "https://github.com/kalessil/production-dependencies-guard",
@@ -17,8 +17,8 @@
     "require-dev": {
         "ext-xdebug":                     "*",
         "composer/composer":              "^1.0|^2.0",
-        "phpunit/phpunit":                "^6.5",
-        "infection/infection":            "^0.9",
+        "phpunit/phpunit":                "^9.0",
+        "infection/infection":            "~0.29",
         "rregeer/phpunit-coverage-check": "^0.1"
     },
     "autoload": {
@@ -40,5 +40,10 @@
             "./vendor/bin/coverage-check ./build/phpunit.clover.xml 100",
             "./vendor/bin/infection --only-covered --min-msi=100 --quiet"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
     }
 }

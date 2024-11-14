@@ -5,3 +5,5 @@ Vagrantfile
 *.phar
 /*.lock
 build
+/.idea
+/.phpunit.result.cache

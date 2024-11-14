@@ -14,10 +14,16 @@ use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\ByPackageDe
 use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\ByPackageLicenseInspector;
 use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\ByPackageNameInspector;
 use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\ByPackageTypeInspector;
+use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\ByVersionNameInspector;
+use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\InspectorInterface;
 use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Inspectors\StubInspector;
 use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Suppliers\FromComposerLockSupplier;
 use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Suppliers\FromComposerManifestSupplier;
 use Kalessil\Composer\Plugins\ProductionDependenciesGuard\Suppliers\SupplierInterface as SupplierContract;
+
+use RuntimeException;
+
+use function in_array;
 
 final class Guard implements ComposerPluginContract, EventSubscriberContract
 {
@@ -25,12 +31,13 @@ final class Guard implements ComposerPluginContract, EventSubscriberContract
     const CHECK_DESCRIPTION  = 'check-description';
     const CHECK_LICENSE      = 'check-license';
     const CHECK_ABANDONED    = 'check-abandoned';
+    const CHECK_VERSION      = 'check-version';
 
     /** @var bool */
     private $useLockFile;
     /** @var Composer */
     private $composer;
-    /** @var array<string,InspectorContract> */
+    /** @var array<string,InspectorInterface> */
     private $inspectors;
     /** @var Whitelist */
     private $whitelist;
@@ -42,20 +49,22 @@ final class Guard implements ComposerPluginContract, EventSubscriberContract
         $manifest = json_decode(file_get_contents(Factory::getComposerFile()), true);
         $settings = $manifest['extra']['production-dependencies-guard'] ?? [];
 
-        $checkLicense     = \in_array(self::CHECK_LICENSE,     $settings, true);
-        $checkAbandoned   = \in_array(self::CHECK_ABANDONED,   $settings, true);
-        $checkDescription = \in_array(self::CHECK_DESCRIPTION, $settings, true);
+        $checkLicense     = in_array(self::CHECK_LICENSE,     $settings, true);
+        $checkAbandoned   = in_array(self::CHECK_ABANDONED,   $settings, true);
+        $checkDescription = in_array(self::CHECK_DESCRIPTION, $settings, true);
+        $checkVersion     = in_array(self::CHECK_VERSION, $settings, true);
         $this->inspectors = [
             'dev-package-name'     => new ByPackageNameInspector(),
             'dev-package-type'     => new ByPackageTypeInspector(),
             'license'              => $checkLicense     ? new ByPackageLicenseInspector($settings) : new StubInspector(),
             'abandoned'            => $checkAbandoned   ? new ByPackageAbandonedInspector()        : new StubInspector(),
             'description-keywords' => $checkDescription ? new ByPackageDescriptionInspector()      : new StubInspector(),
+            'check-version'        => $checkVersion     ? new ByVersionNameInspector($settings)    : new StubInspector(),
         ];
 
         $this->composer    = $composer;
         $this->whitelist   = new Whitelist($settings);
-        $this->useLockFile = \in_array(self::CHECK_LOCK_FILE, $settings, true);
+        $this->useLockFile = in_array(self::CHECK_LOCK_FILE, $settings, true);
         $this->supplier    = $this->useLockFile ? new FromComposerLockSupplier() : new FromComposerManifestSupplier();
     }
 
@@ -88,7 +97,7 @@ final class Guard implements ComposerPluginContract, EventSubscriberContract
             foreach ($violations as $packageName => $rules) {
                 $message .= PHP_EOL . ' - ' . $packageName . ': ' . implode(', ', $rules);
             }
-            throw new \RuntimeException($message);
+            throw new RuntimeException($message);
         }
     }
 
@@ -97,7 +106,7 @@ final class Guard implements ComposerPluginContract, EventSubscriberContract
         return array_filter(
             array_filter(
                 $this->composer->getRepositoryManager()->getLocalRepository()->getPackages(),
-                static function (CompletePackageInterface $package) use ($packages): bool { return \in_array(strtolower($package->getName()), $packages, true); }
+                static function (CompletePackageInterface $package) use ($packages): bool { return in_array(strtolower($package->getName()), $packages, true); }
             ),
             function (CompletePackageInterface $package): bool { return ! $this->whitelist->canUse($package); }
         );
