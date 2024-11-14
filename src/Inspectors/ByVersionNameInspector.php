@@ -28,7 +28,7 @@ final class ByVersionNameInspector implements InspectorContract
 
     public function canUse(CompletePackageInterface $package): bool
     {
-        if (isset($this->envVar[0]) && isset($_ENV[$this->envVar[0]]) && $_ENV[$this->envVar[0]] !== $this->envVar[1]) {
+        if (isset($this->envVar[1]) && isset($_ENV[$this->envVar[0]]) && $_ENV[$this->envVar[0]] !== $this->envVar[1]) {
             return true;
         }
 
